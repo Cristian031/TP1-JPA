@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Rubro")
@@ -18,7 +20,13 @@ public class Rubro implements Serializable {
     @Column(name = "Denominacion")
     private String denominacion;
 
-    public Rubro(String denominacion) {
+    @OneToMany(mappedBy = "rubro")
+    private List<Producto> productos = new ArrayList<Producto>();
+
+    public Rubro(String denominacion, List<Producto> productos) {
         this.denominacion = denominacion;
+        this.productos = productos;
     }
+
+
 }

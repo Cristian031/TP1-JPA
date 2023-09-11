@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "Producto")
 @Data
@@ -37,7 +40,15 @@ public class Producto implements Serializable {
     @Column(name = "Receta")
     private String receta;
 
-    public Producto(TipoProducto tipo, int tiempoEstimadoCocina, String denominacion, double precioVenta, double precioCompra, int stockActual, int stockMinimo, String unidadMoneda, String receta) {
+    @OneToMany(mappedBy = "producto")
+    private List<DetallePedido> detallePedidos = new ArrayList<DetallePedido>();
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "fk.rubro")
+    private Rubro rubro;
+
+    public Producto(Long id, TipoProducto tipo, int tiempoEstimadoCocina, String denominacion, double precioVenta, double precioCompra, int stockActual, int stockMinimo, String unidadMoneda, String receta, List<DetallePedido> detallePedidos, Rubro rubro) {
+        this.id = id;
         this.tipo = tipo;
         this.tiempoEstimadoCocina = tiempoEstimadoCocina;
         this.denominacion = denominacion;
@@ -47,8 +58,7 @@ public class Producto implements Serializable {
         this.stockMinimo = stockMinimo;
         this.unidadMoneda = unidadMoneda;
         this.receta = receta;
+        this.detallePedidos = detallePedidos;
+        this.rubro = rubro;
     }
-
-
-
 }

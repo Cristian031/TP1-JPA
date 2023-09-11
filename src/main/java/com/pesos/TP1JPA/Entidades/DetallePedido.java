@@ -21,8 +21,20 @@ public class DetallePedido implements Serializable {
     @Column(name = "Subtotal")
     private double subtotal;
 
-    public DetallePedido(int cantidad, double subtotal) {
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "fk.pedido")
+    private Pedido pedido;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "fk.producto")
+    private Producto producto;
+
+
+    public DetallePedido(Long id, int cantidad, double subtotal, Pedido pedido, Producto producto) {
+        this.id = id;
         this.cantidad = cantidad;
         this.subtotal = subtotal;
+        this.pedido = pedido;
+        this.producto = producto;
     }
 }
