@@ -3,6 +3,7 @@ package com.pesos.TP1JPA.Entidades;
 import com.pesos.TP1JPA.Enumeraciones.FormadePago;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "Factura")
-@NoArgsConstructor
+@Builder
 public class Factura implements Serializable {
 
 
@@ -32,60 +33,23 @@ public class Factura implements Serializable {
     @Enumerated(EnumType.STRING)
     private FormadePago formadePago;
 
-    public Long getId() {
-        return id;
+    public Factura(){
+
     }
 
-    public void setId(Long id) {
+    public Factura(Long id, int numero, Date fecha, double descuento, int total, FormadePago formadePago, Pedido pedido) {
         this.id = id;
-    }
-
-    public int getNumero() {
-        return numero;
-    }
-
-    public void setNumero(int numero) {
         this.numero = numero;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-
-    public double getDescuento() {
-        return descuento;
-    }
-
-    public void setDescuento(double descuento) {
         this.descuento = descuento;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
         this.total = total;
-    }
-
-    public FormadePago getFormadePago() {
-        return formadePago;
-    }
-
-    public void setFormadePago(FormadePago formadePago) {
         this.formadePago = formadePago;
+        this.pedido = pedido;
     }
 
-    public Factura(int numero, Date fecha, double descuento, int total, FormadePago formadePago) {
-        this.numero = numero;
-        this.fecha = fecha;
-        this.descuento = descuento;
-        this.total = total;
-    }
+    @OneToOne(mappedBy = "factura")
+   // @JoinColumn(name = "pedido_id") // Asegúrate de que el nombre de la columna sea correcto
+    private Pedido pedido;
 
 
 }

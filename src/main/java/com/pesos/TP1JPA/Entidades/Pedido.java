@@ -6,22 +6,31 @@ import com.pesos.TP1JPA.Enumeraciones.TipoEnvio;
 import jakarta.persistence.*;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
 @Data
 @Table(name = "Pedido")
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Pedido implements Serializable {
 
         @Id
         @GeneratedValue (strategy = GenerationType.IDENTITY)
         private Long id;
+
+        @Column(name = "desc_aplicado")
+        private Double descAplicado;
 
         @Column(name = "estado")
         @Enumerated(EnumType.STRING)
@@ -36,69 +45,17 @@ public class Pedido implements Serializable {
         private TipoEnvio tipoEnvio;
         private double total;
 
-        @OneToOne(cascade = CascadeType.ALL)  //cualquier cambio que realice en PEDIDO se refleja en Factura.
-        @JoinColumn(name = "fk_domicilio")
+        @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+        @JoinColumn(name = "Pedido_id")
+        @Builder.Default
+        private List<DetallePedido> detallePedidos = new ArrayList<DetallePedido>();
+
+
+        @OneToOne(cascade = CascadeType.ALL)
+        @JoinColumn(name = "fk_Factura")
         private Factura factura;
 
-        @ManyToOne(cascade = CascadeType.PERSIST)
-        @JoinColumn(name = "fk.cliente")
-        private Cliente cliente;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public EstadoPedido getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoPedido estado) {
-        this.estado = estado;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public TipoEnvio getTipoEnvio() {
-        return tipoEnvio;
-    }
-
-    public void setTipoEnvio(TipoEnvio tipoEnvio) {
-        this.tipoEnvio = tipoEnvio;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public Factura getFactura() {
-        return factura;
-    }
-
-    public void setFactura(Factura factura) {
-        this.factura = factura;
-    }
-
-    public Pedido(Long id, EstadoPedido estado, Date fecha, TipoEnvio tipoEnvio, double total, Factura factura, Cliente cliente) {
-        this.id = id;
-        this.estado = estado;
-        this.fecha = fecha;
-        this.tipoEnvio = tipoEnvio;
-        this.total = total;
-        this.factura = factura;
-        this.cliente = cliente;
-    }
+        public void agregarDetallePedido (DetallePedido deta){
+                detallePedidos.add(deta);
+        }
 }
