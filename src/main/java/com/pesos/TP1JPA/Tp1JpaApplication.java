@@ -16,6 +16,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @SpringBootApplication
@@ -23,8 +25,11 @@ public class Tp1JpaApplication {
 
 	@Autowired
 	ClienteRepositorio clienteRepositorio;
+	@Autowired
 	PedidoRepositorio pedidoRepositorio;
+	@Autowired
 	FacturaRepositorio facturaRepositorio;
+	@Autowired
 	RubroRepositorio rubroRepositorio;
 
 	public static void main(String[] args) {
@@ -53,11 +58,13 @@ public class Tp1JpaApplication {
 							.build();
 
 					Pedido pedido1 = Pedido.builder()
+							.fecha(new Date())
 							.estado(EstadoPedido.INICIADO)
 							.tipoEnvio(TipoEnvio.DELIVERY)
 							.build();
 
 					Pedido pedido2 = Pedido.builder()
+							.fecha(new Date())
 							.estado(EstadoPedido.PREPARACION)
 							.tipoEnvio(TipoEnvio.RETIRAR)
 							.build();
@@ -77,64 +84,6 @@ public class Tp1JpaApplication {
 					cliente.addPedido(pedido2);
 
 					clienteRepositorio.save(cliente);
-
-
-					DetallePedido detalle1Pedido1 = DetallePedido.builder()
-							.cantidad(1)
-							.subtotal(3000.00)
-							.build();
-					pedido1.agregarDetallePedido(detalle1Pedido1);
-
-					DetallePedido detalle2Pedido1 = DetallePedido.builder()
-							.cantidad(2)
-							.subtotal(7000.00)
-							.build();
-					pedido1.agregarDetallePedido(detalle2Pedido1);
-
-					pedidoRepositorio.save(pedido1);
-
-					DetallePedido detalle1Pedido2 = DetallePedido.builder()
-							.cantidad(1)
-							.subtotal(3500.00)
-							.build();
-					pedido2.agregarDetallePedido(detalle1Pedido2);
-
-					DetallePedido detalle2Pedido2 = DetallePedido.builder()
-							.cantidad(2)
-							.subtotal(6000.00)
-							.build();
-					pedido2.agregarDetallePedido(detalle2Pedido2);
-
-					pedidoRepositorio.save(pedido2);
-
-					Factura factura1 = Factura.builder()
-							.numero(001)
-							.formadePago(FormadePago.EFECTIVO)
-							.descuento(200.00)
-							.total(3500)
-							.pedido(pedido1)   // Asociar la factura con el pedido
-							.build();
-
-					Factura factura2 = Factura.builder()
-							.numero(002)
-							.formadePago(FormadePago.TARJETA)
-							.descuento(3000.00)
-							.total(18000)
-							.pedido(pedido2)   // Asociar la factura con el pedido
-							.build();
-
-					pedido1.setDescAplicado(200.00);
-					pedido1.setTotal(totalConDescuento1);
-					pedido1.setFactura(factura1);
-					facturaRepositorio.save(factura1);
-					pedidoRepositorio.save(pedido1);
-
-
-					pedido2.setDescAplicado(3000.0);
-					pedido2.setTotal(totalConDescuento2);
-					pedido2.setFactura(factura2);
-					facturaRepositorio.save(factura2);
-					pedidoRepositorio.save(pedido2);
 
 					Rubro rubro = Rubro.builder()
 							.denominacion("Local")
@@ -167,6 +116,61 @@ public class Tp1JpaApplication {
 					rubro.addProducto(producto1);
 					rubro.addProducto(producto2);
 					rubroRepositorio.save(rubro);
+
+
+					DetallePedido detalle1Pedido1 = DetallePedido.builder()
+							.cantidad(1)
+							.subtotal(3000.00)
+							.build();
+					pedido1.agregarDetallePedido(detalle1Pedido1);
+
+					detalle1Pedido1.setProducto(producto1);
+
+					pedidoRepositorio.save(pedido1);
+
+
+					DetallePedido detalle2Pedido2 = DetallePedido.builder()
+							.cantidad(2)
+							.subtotal(6000.00)
+							.build();
+					pedido2.agregarDetallePedido(detalle2Pedido2);
+
+					detalle2Pedido2.setProducto(producto2);
+
+					pedidoRepositorio.save(pedido2);
+
+					Factura factura1 = Factura.builder()
+							.numero(001)
+							.fecha(new Date())
+							.formadePago(FormadePago.EFECTIVO)
+							.descuento(200.00)
+							.total(3500)
+							.pedido(pedido1)   // Asociar la factura con el pedido
+							.build();
+
+					Factura factura2 = Factura.builder()
+							.numero(002)
+							.fecha(new Date())
+							.formadePago(FormadePago.TARJETA)
+							.descuento(3000.00)
+							.total(18000)
+							.pedido(pedido2)   // Asociar la factura con el pedido
+							.build();
+
+					pedido1.setDescAplicado(200.00);
+					pedido1.setTotal(totalConDescuento1);
+					pedido1.setFactura(factura1);
+					facturaRepositorio.save(factura1);
+					pedidoRepositorio.save(pedido1);
+
+
+					pedido2.setDescAplicado(3000.0);
+					pedido2.setTotal(totalConDescuento2);
+					pedido2.setFactura(factura2);
+					facturaRepositorio.save(factura2);
+					pedidoRepositorio.save(pedido2);
+
+
 
 		};
 	}
